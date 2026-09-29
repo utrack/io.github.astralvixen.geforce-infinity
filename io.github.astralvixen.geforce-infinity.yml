@@ -33,8 +33,10 @@ modules:
       build-commands:
           - |
               set -e
+              jq 'del(.devDependencies["@esbuild/linux-x64"]) | .devDependencies.esbuild = "^0.27.0"' package.json > package.json.tmp
+              mv package.json.tmp package.json
               HOME=$PWD yarn config --offline set yarn-offline-mirror $FLATPAK_BUILDER_BUILDDIR/flatpak-node/yarn-mirror
-              yarn --offline install --ignore-optional
+              yarn --offline install
               APP_VERSION=$(jq -r .version package.json)
               export APP_VERSION
               yarn --offline run tailwindcss -i src/overlay/index.css -o dist/assets/tailwind.bundle.css --minify
