@@ -5584,9 +5584,9 @@
     },
     {
         "type": "file",
-        "url": "https://registry.yarnpkg.com/node-abi/-/node-abi-3.87.0.tgz#423e28fea5c2f195fddd98acded9938c001ae6dd",
-        "sha512": "f8218cd4bd42826b6178b701ba57b260e9fb3563d5bb4b341091f60b8a6ec601196fd87c42947d1b67417d924e014862ed5431b813cc77486221259c4f2898c9",
-        "dest-filename": "node-abi-3.87.0.tgz",
+        "url": "https://registry.yarnpkg.com/node-abi/-/node-abi-3.96.0.tgz#8b038bc6cca97d6cec2e9aafdb81b900da1ff80d",
+        "sha512": "ade6d0fe5cfb8b4124a0bcd4552aca47303af73324c0ba7de6428c5a8303924334d12bb1cf40fbcc440fc119a5e5f42e9b6e268fb6cfbe69602c09aed890a262",
+        "dest-filename": "node-abi-3.96.0.tgz",
         "dest": "flatpak-node/yarn-mirror"
     },
     {

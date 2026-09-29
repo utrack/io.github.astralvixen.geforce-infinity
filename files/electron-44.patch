@@ -1,5 +1,5 @@
 diff --git a/package.json b/package.json
-index 968759d..dfe17ae 100644
+index 968759d..84e839f 100644
 --- a/package.json
 +++ b/package.json
 @@ -41,7 +41,7 @@
@@ -11,15 +11,20 @@ index 968759d..dfe17ae 100644
          "electron-builder": "^25.1.8",
          "electron-rebuild": "^3.2.9",
          "eslint": "^9.30.1",
-@@ -134,4 +134,4 @@
+@@ -133,5 +133,9 @@
+             }
          ]
      },
++    "resolutions": {
++        "**/@electron/rebuild/node-abi": "3.96.0",
++        "**/electron-rebuild/node-abi": "3.96.0"
++    },
      "private": true
 -}
 +}
 \ No newline at end of file
 diff --git a/yarn.lock b/yarn.lock
-index 00fe9d5..8f507f4 100644
+index 00fe9d5..05ac4ad 100644
 --- a/yarn.lock
 +++ b/yarn.lock
 @@ -185,6 +185,11 @@
@@ -75,7 +80,7 @@ index 00fe9d5..8f507f4 100644
 -    undici-types "~6.21.0"
 -
 -"@types/node@^24.1.0":
-+"@types/node@24.11.0", "@types/node@^24.1.0", "@types/node@^24.9.0":
++"@types/node@^24.1.0", "@types/node@^24.9.0":
    version "24.11.0"
    resolved "https://registry.yarnpkg.com/@types/node/-/node-24.11.0.tgz#34e8f9603ada03fdc36a532faefdb8e1bb3693a0"
    integrity sha512-fPxQqz4VTgPI/IQ+lj9r0h+fDR66bzoeMGHp8ASee+32OSGIkeASsoZuJixsQoVef1QJbeubcPBxKk22QVoWdw==
@@ -297,6 +302,21 @@ index 00fe9d5..8f507f4 100644
  math-intrinsics@^1.1.0:
    version "1.1.0"
    resolved "https://registry.yarnpkg.com/math-intrinsics/-/math-intrinsics-1.1.0.tgz#a0dd74be81e2aa5c2f27e65ce283605ee4e2b7f9"
+@@ -6038,10 +5960,10 @@ nice-try@^1.0.4:
+   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
+   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
+ 
+-node-abi@^3.0.0, node-abi@^3.45.0:
+-  version "3.87.0"
+-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.87.0.tgz#423e28fea5c2f195fddd98acded9938c001ae6dd"
+-  integrity sha512-+CGM1L1CgmtheLcBuleyYOn7NWPVu0s0EJH2C4puxgEZb9h8QpR9G2dBfZJOAUhi7VQxuBPMd0hiISWcTyiYyQ==
++node-abi@3.96.0, node-abi@^3.0.0, node-abi@^3.45.0:
++  version "3.96.0"
++  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.96.0.tgz#8b038bc6cca97d6cec2e9aafdb81b900da1ff80d"
++  integrity sha512-rebQ/lz7i0EkoLzUVSrKRzA69zMkwLp95kKMWoMDkkM00Suxz0D7zEQPwRml5fQum24mj7bPvmlgLAmu2JCiYg==
+   dependencies:
+     semver "^7.3.5"
+ 
 @@ -6503,11 +6425,6 @@ pe-library@^0.4.1:
    resolved "https://registry.yarnpkg.com/pe-library/-/pe-library-0.4.1.tgz#e269be0340dcb13aa6949d743da7d658c3e2fbea"
    integrity sha512-eRWB5LBz7PpDu4PUlwT0PhnQfTQJlDDdPa35urV4Osrm0t0AqQFGn+UIkU3klZvwJ8KPO3VbBFsXquA6p6kqZw==
@@ -404,7 +424,7 @@ index 00fe9d5..8f507f4 100644
    resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-7.18.2.tgz#29357a89e7b7ca4aef3bf0fd3fd0cd73884229e9"
    integrity sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==
  
-+undici@7.29.0, undici@^7.24.4:
++undici@^7.24.4:
 +  version "7.29.0"
 +  resolved "https://registry.yarnpkg.com/undici/-/undici-7.29.0.tgz#ae0f6f62e06e057a9cbb7b2b5fde2bb74f791b8f"
 +  integrity sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==

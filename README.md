@@ -36,6 +36,12 @@ offline Yarn installation. Dependencies no longer used by Electron are removed.
 Unrelated dependency versions remain unchanged. The generator also updates the
 node-gyp cache marker and fixes its esbuild cache links.
 
+Both `@electron/rebuild` and `electron-rebuild` resolve `node-abi` to **3.96.0**.
+The previous nested version, 3.87.0, cannot identify Electron 44 during native
+module rebuilds. Version 3.96.0 maps Electron 44 to ABI 149 and satisfies both
+rebuild tools' existing 3.x dependency ranges. The app's separate `node-abi` 4.x
+dependency is unchanged.
+
 Electron 44 requires build-time Node.js 22.12.0 or newer and has no ARMv7 binary;
 Electron sources cover ARM64 and x86-64 only. The existing Node 22 SDK extension
 remains in use. Keep the dependency patch, generated sources, and CI version
