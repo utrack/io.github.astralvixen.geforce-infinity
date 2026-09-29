@@ -71,6 +71,10 @@ modules:
             dest-filename: geforce-infinity.sh
             commands:
                 - |
+                    unset ELECTRON_RUN_AS_NODE
+                    if [ "$(uname -m)" = "aarch64" ]; then
+                        export MESA_LOADER_DRIVER_OVERRIDE=zink
+                    fi
                     export TMPDIR="$XDG_RUNTIME_DIR/app/$FLATPAK_ID"
                     exec zypak-wrapper /app/geforce-infinity/geforce-infinity "$@"
 
