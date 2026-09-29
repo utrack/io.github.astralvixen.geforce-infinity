@@ -29,6 +29,7 @@ modules:
           env:
               XDG_CACHE_HOME: /run/build/geforce-infinity/flatpak-node/cache
               npm_config_cache: /run/build/geforce-infinity/flatpak-node/npm-cache
+              npm_config_nodedir: /usr/lib/sdk/node22
               npm_config_offline: "true"
       build-commands:
           - |
