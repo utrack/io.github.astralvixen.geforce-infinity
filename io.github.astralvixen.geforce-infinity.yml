@@ -34,7 +34,7 @@ modules:
       build-commands:
           - |
               set -e
-              jq 'del(.devDependencies["@esbuild/linux-x64"]) | .devDependencies.esbuild = "^0.27.0"' package.json > package.json.tmp
+              jq 'del(.devDependencies["@esbuild/linux-x64"]) | .devDependencies.esbuild = "^0.27.0" | .build.electronVersion = .devDependencies.electron' package.json > package.json.tmp
               mv package.json.tmp package.json
               HOME=$PWD yarn config --offline set yarn-offline-mirror $FLATPAK_BUILDER_BUILDDIR/flatpak-node/yarn-mirror
               yarn --offline install
@@ -64,6 +64,9 @@ modules:
                 url: https://api.github.com/repos/AstralVixen/GeForce-Infinity/releases/latest
                 version-query: .tag_name | sub("^v"; "")
                 url-query: '"https://github.com/AstralVixen/GeForce-Infinity/archive/refs/tags/\($version).zip"'
+
+          - type: patch
+            path: files/electron-44.patch
 
           - generated-sources.json
 

@@ -60,6 +60,13 @@ jobs:
           {
             test -x builddir/files/geforce-infinity/geforce-infinity
             test -s builddir/files/geforce-infinity/resources/app.asar
+            flatpak build builddir env ELECTRON_RUN_AS_NODE=1 \
+              /app/geforce-infinity/geforce-infinity -e '
+                const assert = require("node:assert/strict");
+                console.log(JSON.stringify(process.versions, null, 2));
+                assert.equal(process.versions.electron, "44.4.3");
+                assert.equal(process.arch, "arm64");
+              '
             file builddir/files/geforce-infinity/geforce-infinity
             readelf -h builddir/files/geforce-infinity/geforce-infinity
             readelf -h builddir/files/geforce-infinity/geforce-infinity \
