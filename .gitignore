@@ -1,3 +1,6 @@
 .flatpak-builder
 builddir
 repo
+/diagnostics/
+*.flatpak
+*.flatpak.sha256

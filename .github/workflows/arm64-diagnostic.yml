@@ -1,0 +1,124 @@
+name: ARM64 Flatpak build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out packaging source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Record source and check runner architecture
+        run: |
+          set -euo pipefail
+          mkdir -p diagnostics
+          git rev-parse HEAD | tee diagnostics/source-commit.txt
+          uname -m | tee diagnostics/runner-architecture.txt
+          test "$(uname -m)" = aarch64
+
+      - name: Install build tools and configure Flathub
+        run: |
+          set -euo pipefail
+          {
+            sudo apt-get update
+            sudo apt-get install -y flatpak flatpak-builder binutils file ostree python3
+            flatpak --version
+            flatpak-builder --version
+            flatpak remote-add --user --if-not-exists \
+              flathub https://flathub.org/repo/flathub.flatpakrepo
+          } 2>&1 | tee diagnostics/setup-arm64.log
+
+      - name: Build the ARM64 Flatpak
+        run: |
+          set -euo pipefail
+          flatpak-builder \
+            --user \
+            --arch=aarch64 \
+            --assumeyes \
+            --install-deps-from=flathub \
+            --default-branch=arm64-test \
+            --repo=repo \
+            builddir \
+            io.github.astralvixen.geforce-infinity.yml \
+            2>&1 | tee diagnostics/build-arm64.log
+
+      - name: Validate the ARM64 payload
+        run: |
+          set -euo pipefail
+          export LC_ALL=C
+          {
+            test -x builddir/files/geforce-infinity/geforce-infinity
+            test -s builddir/files/geforce-infinity/resources/app.asar
+            file builddir/files/geforce-infinity/geforce-infinity
+            readelf -h builddir/files/geforce-infinity/geforce-infinity
+            readelf -h builddir/files/geforce-infinity/geforce-infinity \
+              | awk '/Machine:/ { found = ($2 == "AArch64") } END { exit !found }'
+            python3 - <<'PY'
+          from pathlib import Path
+
+          for path in sorted(Path("builddir/files/geforce-infinity").rglob("*")):
+              if not path.is_file():
+                  continue
+              with path.open("rb") as binary:
+                  header = binary.read(20)
+              native = path.name.endswith((".node", ".so")) or ".so." in path.name
+              if header[:4] != b"\x7fELF":
+                  if native:
+                      raise SystemExit(f"Native library is not ELF: {path}")
+                  continue
+              if header[4:6] != b"\x02\x01" or header[18:20] != b"\xb7\x00":
+                  raise SystemExit(f"ELF is not 64-bit little-endian AArch64: {path}")
+              print(f"AArch64: {path}")
+          PY
+            ostree --repo=repo ls -R \
+              app/io.github.astralvixen.geforce-infinity/aarch64/arm64-test \
+              /files/geforce-infinity
+          } 2>&1 | tee diagnostics/validation-arm64.log
+
+      - name: Export the test bundle
+        run: |
+          set -euo pipefail
+          {
+            flatpak build-bundle \
+              --arch=aarch64 \
+              --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo \
+              repo \
+              geforce-infinity-arm64-test.flatpak \
+              io.github.astralvixen.geforce-infinity \
+              arm64-test
+            sha256sum geforce-infinity-arm64-test.flatpak \
+              | tee geforce-infinity-arm64-test.flatpak.sha256
+            sha256sum -c geforce-infinity-arm64-test.flatpak.sha256
+          } 2>&1 | tee diagnostics/bundle-arm64.log
+
+      - name: Upload the test bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: geforce-infinity-arm64-test
+          path: |
+            geforce-infinity-arm64-test.flatpak
+            geforce-infinity-arm64-test.flatpak.sha256
+            diagnostics/source-commit.txt
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Preserve build logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: arm64-build-logs
+          path: diagnostics/
+          if-no-files-found: warn
+          retention-days: 14

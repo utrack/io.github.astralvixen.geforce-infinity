@@ -32,9 +32,11 @@ modules:
               npm_config_offline: "true"
       build-commands:
           - |
+              set -e
               HOME=$PWD yarn config --offline set yarn-offline-mirror $FLATPAK_BUILDER_BUILDDIR/flatpak-node/yarn-mirror
               yarn --offline install --ignore-optional
-              export APP_VERSION=$(jq -r .version package.json)
+              APP_VERSION=$(jq -r .version package.json)
+              export APP_VERSION
               yarn --offline run tailwindcss -i src/overlay/index.css -o dist/assets/tailwind.bundle.css --minify
               yarn --offline run esbuild src/overlay/index.tsx --bundle --outdir=dist/overlay --format=esm --target=esnext --external:electron --splitting --minify --jsx=automatic --jsx-import-source=react --define:__APP_VERSION__="\"$APP_VERSION\"" --entry-names=[name]
               yarn --offline run tsc -p tsconfig.electron.json
@@ -42,6 +44,8 @@ modules:
               . flatpak-node/electron-builder-arch-args.sh; yarn --offline run electron-builder --dir --linux $ELECTRON_BUILDER_ARCH_ARGS
               mkdir -p $FLATPAK_DEST/geforce-infinity
               cp -a builds/linux*unpacked/* $FLATPAK_DEST/geforce-infinity/
+              test -x "$FLATPAK_DEST/geforce-infinity/geforce-infinity"
+              test -s "$FLATPAK_DEST/geforce-infinity/resources/app.asar"
               install -Dm 644 "icon.png" "${FLATPAK_DEST}/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png"
               install -Dm 644 "${FLATPAK_ID}.metainfo.xml" "${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.metainfo.xml"
               install -Dm 755 "geforce-infinity.sh" "/app/bin/geforce-infinity"
